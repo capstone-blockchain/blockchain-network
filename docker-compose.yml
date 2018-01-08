@@ -1,0 +1,29 @@
+version: '2'
+services:
+  node1:
+    image: blockchain
+    command: sh -c "yarn; nodemon --inspect=0.0.0.0:5858 index.js"
+    volumes:
+      - ".:/var/app"
+    ports:
+      - 3000:3000
+    environment:
+      TERM: xterm-256color
+  node2:
+    image: blockchain
+    command: sh -c "yarn; nodemon --inspect=0.0.0.0:5858 index.js"
+    volumes:
+      - ".:/var/app"
+    ports:
+      - 3001:3000
+    environment:
+      TERM: xterm-256color
+  node3:
+    image: blockchain
+    command: sh -c "yarn; nodemon --inspect=0.0.0.0:5858 index.js"
+    volumes:
+      - ".:/var/app"
+    ports:
+      - 3002:3000
+    environment:
+      TERM: xterm-256color

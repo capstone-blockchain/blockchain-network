@@ -1,17 +1,11 @@
-const features = require("./features");
+const features = require("./src/features");
+const server = require("./src/server");
 
-let blockchain = [features.getGenesisBlock()];
+global.blockchain = [features.getGenesisBlock()];
 
 const block1 = features.generateNextBlock(
   "Block 1",
-  blockchain[blockchain.length - 1]
+  global.blockchain[global.blockchain.length - 1]
 );
-blockchain.push(block1);
-
-const block2 = features.generateNextBlock(
-  "Block 2",
-  blockchain[blockchain.length - 1]
-);
-blockchain.push(block2);
-
-console.log(blockchain);
+global.blockchain.push(block1);
+server();
