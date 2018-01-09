@@ -9,21 +9,21 @@ services:
       - 3000:3000
     environment:
       TERM: xterm-256color
-  node2:
-    image: blockchain
-    command: sh -c "yarn; nodemon index.js"
-    volumes:
-      - ".:/var/app"
-    ports:
-      - 3001:3000
-    environment:
-      TERM: xterm-256color
-  node3:
-    image: blockchain
-    command: sh -c "yarn; nodemon index.js"
-    volumes:
-      - ".:/var/app"
-    ports:
-      - 3002:3000
-    environment:
-      TERM: xterm-256color
+  # node2:
+  #   image: blockchain
+  #   command: sh -c "yarn; nodemon index.js"
+  #   volumes:
+  #     - ".:/var/app"
+  #   ports:
+  #     - 3001:3000
+  #   environment:
+  #     TERM: xterm-256color
+  # node3:
+  #   image: blockchain
+  #   command: sh -c "yarn; nodemon index.js"
+  #   volumes:
+  #     - ".:/var/app"
+  #   ports:
+  #     - 3002:3000
+  #   environment:
+  #     TERM: xterm-256color
