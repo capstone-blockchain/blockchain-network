@@ -1,6 +1,7 @@
 const features = require("./src/features");
 const server = require("./src/server");
 
+global.nodes = new Set();
 global.blockchain = [features.getGenesisBlock()];
 
 const block1 = features.generateNextBlock(

@@ -23,7 +23,7 @@ function isValidHashDifficulty(hash = "", difficulty) {
 function calculateHash(index, previousHash, timestamp, data) {
   let nonce = 0;
   let hash;
-  while (!isValidHashDifficulty(hash, 4)) {
+  while (!isValidHashDifficulty(hash, 1)) {
     nonce = nonce + 1;
     hash = CryptoJS.SHA256(
       index + previousHash + timestamp + data + nonce
