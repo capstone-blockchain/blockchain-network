@@ -9,6 +9,8 @@ services:
       - 3000:3000
     environment:
       TERM: xterm-256color
+    stdin_open: true
+    tty: true
   # node2:
   #   image: blockchain
   #   command: sh -c "yarn; nodemon index.js"

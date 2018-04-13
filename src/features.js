@@ -7,12 +7,32 @@ function getGenesisBlock() {
     "0",
     1465154705,
     "my genesis block!!",
-    "816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7"
+    "816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7",
+    0
   );
 }
 
+function isValidHashDifficulty(hash = "", difficulty) {
+  let i;
+  for (i = 0; i < hash.length; i++) {
+    if (hash[i] !== "0") break;
+  }
+  return i >= difficulty;
+}
+
 function calculateHash(index, previousHash, timestamp, data) {
-  return CryptoJS.SHA256(index + previousHash + timestamp + data).toString();
+  let nonce = 0;
+  let hash;
+  while (!isValidHashDifficulty(hash, 4)) {
+    nonce = nonce + 1;
+    hash = CryptoJS.SHA256(
+      index + previousHash + timestamp + data + nonce
+    ).toString();
+  }
+  return {
+    hash,
+    nonce
+  };
 }
 
 function generateNextBlock(blockData, latestBlock) {
@@ -30,7 +50,8 @@ function generateNextBlock(blockData, latestBlock) {
     previousBlock.hash,
     nextTimestamp,
     blockData,
-    nextHash
+    nextHash.hash,
+    nextHash.nonce
   );
 }
 
@@ -80,4 +101,4 @@ module.exports = {
   generateNextBlock,
   isValidNewBlock,
   replaceBlockChain
-}
+};
