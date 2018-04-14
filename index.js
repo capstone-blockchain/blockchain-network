@@ -9,6 +9,7 @@ global.blockchain = [features.getGenesisBlock()];
 
 const wss = new WebSocket.Server({ port: process.env.NODE_PORT });
 wss.on("connection", ws => {
+  global.nodes.push(ws);
   ws.on("message", data => {
     const value = JSON.parse(data);
     if (value.id === "blockchain" && features.isValidChain(value.blockchain)) {

@@ -36,7 +36,5 @@ module.exports = () => {
     res.json(global.nodes);
   });
 
-  app.listen(3000, () =>
-    console.log(`Listening http on port: ${process.env.NODE_PORT}`)
-  );
+  app.listen(3000, () => console.log("Listening http on port 3000"));
 };
