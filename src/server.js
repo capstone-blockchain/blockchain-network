@@ -15,7 +15,7 @@ module.exports = () => {
       global.blockchain[global.blockchain.length - 1]
     );
     global.blockchain.push(newBlock);
-    console.log("block added");
+    features.broadcastChain(global.nodes);
     res.json(newBlock);
   });
 
@@ -23,7 +23,7 @@ module.exports = () => {
   app.post("/register/node", (req, res) => {
     if (Array.isArray(req.body.node_urls)) {
       for (const i of req.body.node_urls) {
-        global.nodes.add(i);
+        features.addNewNode(i);
       }
       res.json(req.body.node_urls);
     } else {
@@ -33,8 +33,10 @@ module.exports = () => {
 
   // Get all nodes
   app.get("/nodes", (req, res) => {
-    res.json(Array.from(global.nodes));
+    res.json(global.nodes);
   });
 
-  app.listen(3000, () => console.log("Listening http on port: 3000"));
+  app.listen(3000, () =>
+    console.log(`Listening http on port: ${process.env.NODE_PORT}`)
+  );
 };
