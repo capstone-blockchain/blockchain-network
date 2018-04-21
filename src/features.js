@@ -1,6 +1,9 @@
 const CryptoJS = require("crypto-js");
 const Block = require("./block");
 const WebSocket = require("ws");
+const MESSAGE_TYPE = {
+  blockchain: "blockchain"
+};
 
 function getGenesisBlock() {
   return new Block(
@@ -96,10 +99,6 @@ function replaceBlockChain(newBlockChain, currentBlockChain) {
   }
 }
 
-/**
- * Add list of new nodes
- * @param  {String} hosts
- */
 function addNewNode(host) {
   const ws = new WebSocket(`ws://${host}`);
   ws.on("open", () => {
@@ -114,13 +113,15 @@ function addNewNode(host) {
 
 function broadcastChain(nodes) {
   for (const node of nodes) {
-    node.send(
-      JSON.stringify({
-        id: "blockchain",
-        blockchain: global.blockchain
-      })
-    );
+    node.send(message(MESSAGE_TYPE.blockchain, global.blockchain));
   }
+}
+
+function message(type, msg) {
+  return JSON.stringify({
+    type,
+    msg
+  });
 }
 
 module.exports = {
@@ -131,5 +132,6 @@ module.exports = {
   replaceBlockChain,
   addNewNode,
   broadcastChain,
-  isValidChain
+  isValidChain,
+  MESSAGE_TYPE
 };

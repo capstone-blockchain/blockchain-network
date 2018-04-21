@@ -33,7 +33,7 @@ module.exports = () => {
 
   // Get all nodes
   app.get("/nodes", (req, res) => {
-    res.json(global.nodes);
+    res.json(global.nodes.length);
   });
 
   app.listen(3000, () => console.log("Listening http on port 3000"));

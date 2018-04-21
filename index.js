@@ -12,11 +12,13 @@ wss.on("connection", ws => {
   global.nodes.push(ws);
   ws.on("message", data => {
     const value = JSON.parse(data);
-    if (value.id === "blockchain" && features.isValidChain(value.blockchain)) {
-      global.blockchain = value.blockchain;
-      console.log(JSON.stringify(value.blockchain));
+    if (
+      value.type === features.MESSAGE_TYPE.blockchain &&
+      features.isValidChain(value.msg)
+    ) {
+      global.blockchain = value.msg;
     } else {
-      global.nodes = value.nodes;
+      global.nodes = value.msg;
     }
   });
 });
