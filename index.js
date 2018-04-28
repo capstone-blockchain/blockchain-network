@@ -9,7 +9,7 @@ global.blockchain = [features.getGenesisBlock()];
 
 const wss = new WebSocket.Server({ port: process.env.NODE_PORT });
 wss.on("connection", ws => {
-  global.nodes.push(ws);
+  // global.nodes.push(ws);
   ws.on("message", data => {
     const value = JSON.parse(data);
     if (
@@ -17,8 +17,6 @@ wss.on("connection", ws => {
       features.isValidChain(value.msg)
     ) {
       global.blockchain = value.msg;
-    } else {
-      global.nodes = value.msg;
     }
   });
 });
