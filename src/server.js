@@ -2,19 +2,26 @@ const bodyParser = require("body-parser");
 const app = require("express")();
 
 const features = require("./features");
+const BlockModel = require("./mongodb/block");
 
 module.exports = () => {
   app.use(bodyParser.json());
+
   // Get list of blocks in chain.
-  app.get("/blocks", (req, res) => res.json(global.blockchain));
+  app.get("/blocks", async (req, res) => {
+    const blockchain = await BlockModel.find({})
+      .select("-_id -__v")
+      .exec();
+    res.json(blockchain);
+  });
 
   // Mine a new block
-  app.post("/mineBlock", (req, res) => {
-    const newBlock = features.generateNextBlock(
-      req.body.data,
-      global.blockchain[global.blockchain.length - 1]
-    );
-    global.blockchain.push(newBlock);
+  app.post("/mineBlock", async (req, res) => {
+    const latestBlock = await BlockModel.findOne()
+      .sort("field -_id")
+      .limit(1);
+    const newBlock = features.generateNextBlock(req.body.data, latestBlock);
+    BlockModel.create(newBlock);
     features.broadcastChain(global.nodes);
     res.json(newBlock);
   });
