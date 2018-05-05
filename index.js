@@ -19,6 +19,13 @@ wss.on("connection", ws => {
       value.type === features.MESSAGE_TYPE.blockchain &&
       features.isValidChain(value.msg)
     ) {
+      BlockModel.deleteMany({}).then(() => {
+        BlockModel.create(value.msg);
+      });
+    } else if (
+      value.type === features.MESSAGE_TYPE.block &&
+      features.isValidBlock(value.msg)
+    ) {
       BlockModel.create(value.msg);
     }
   });

@@ -1,8 +1,10 @@
 const CryptoJS = require("crypto-js");
 const Block = require("./block");
 const WebSocket = require("ws");
+const BlockModel = require("./mongodb/block");
 const MESSAGE_TYPE = {
-  blockchain: "blockchain"
+  blockchain: "blockchain",
+  block: "block"
 };
 
 function getGenesisBlock() {
@@ -29,9 +31,7 @@ function calculateHash(index, previousHash, timestamp, data) {
   let hash;
   while (!isValidHashDifficulty(hash, 1)) {
     nonce = nonce + 1;
-    hash = CryptoJS.SHA256(
-      index + previousHash + timestamp + data + nonce
-    ).toString();
+    hash = getHashingString({ index, previousHash, timestamp, data, nonce });
   }
   return {
     hash,
@@ -39,10 +39,16 @@ function calculateHash(index, previousHash, timestamp, data) {
   };
 }
 
+function getHashingString({ index, previousHash, timestamp, data, nonce }) {
+  return CryptoJS.SHA256(
+    index + previousHash + timestamp + data + nonce
+  ).toString();
+}
+
 function generateNextBlock(blockData, latestBlock) {
   const previousBlock = latestBlock;
   const nextIndex = previousBlock.index + 1;
-  const nextTimestamp = new Date().getTime() / 1000;
+  const nextTimestamp = new Date().getTime();
   const nextHash = calculateHash(
     nextIndex,
     previousBlock.hash,
@@ -71,17 +77,17 @@ function isValidNewBlock(newBlock, previousBlock) {
 }
 
 function isValidChain(blockchain) {
-  if (blockchain.length < 2) return;
+  if (blockchain.length < 2) return true;
   for (let index = 1; index < blockchain.length; index++) {
     if (
       blockchain[index].index !== index ||
       blockchain[index].previousHash !== blockchain[index - 1].hash
     ) {
       return false;
-    } else {
-      return true;
     }
   }
+
+  return true;
 }
 
 function replaceBlockChain(newBlockChain, currentBlockChain) {
@@ -111,10 +117,39 @@ function addNewNode(host) {
   });
 }
 
-function broadcastChain(nodes) {
+async function broadcastChain(nodes) {
+  const blockchain = await BlockModel.find({})
+    .select("-_id -__v")
+    .exec();
   for (const node of nodes) {
-    node.send(message(MESSAGE_TYPE.blockchain, global.blockchain));
+    node.send(message(MESSAGE_TYPE.blockchain, blockchain));
   }
+}
+
+function broadcastBlock(block) {
+  for (const node of global.nodes) {
+    node.send(message(MESSAGE_TYPE.block, block));
+  }
+}
+
+async function isValidBlock(newBlock) {
+  const previousBlock = await BlockModel.find({})
+    .select("-_id -__v")
+    .sort("field -_id")
+    .limit(1)
+    .exec();
+  if (previousBlock.index + 1 !== newBlock.index) {
+    console.log("invalid index");
+    return false;
+  } else if (previousBlock.hash !== newBlock.previousHash) {
+    console.log("invalid previoushash");
+    return false;
+  } else if (getHashingString(newBlock) !== newBlock.hash) {
+    console.log("invalid hash");
+    return false;
+  }
+
+  return true;
 }
 
 function message(type, msg) {
@@ -133,5 +168,7 @@ module.exports = {
   addNewNode,
   broadcastChain,
   isValidChain,
+  broadcastBlock,
+  isValidBlock,
   MESSAGE_TYPE
 };

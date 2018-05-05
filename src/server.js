@@ -11,6 +11,7 @@ module.exports = () => {
   app.get("/blocks", async (req, res) => {
     const blockchain = await BlockModel.find({})
       .select("-_id -__v")
+      .sort("field index")
       .exec();
     res.json(blockchain);
   });
@@ -18,11 +19,11 @@ module.exports = () => {
   // Mine a new block
   app.post("/mineBlock", async (req, res) => {
     const latestBlock = await BlockModel.findOne()
-      .sort("field -_id")
+      .sort("field -index")
       .limit(1);
     const newBlock = features.generateNextBlock(req.body.data, latestBlock);
     BlockModel.create(newBlock);
-    features.broadcastChain(global.nodes);
+    features.broadcastBlock(newBlock);
     res.json(newBlock);
   });
 
