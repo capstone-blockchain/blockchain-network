@@ -44,5 +44,13 @@ module.exports = () => {
     res.json(global.nodes.length);
   });
 
+  app.get("/block/latest", async (req, res) => {
+    const latestBlock = await BlockModel.findOne()
+      .select("-_id -__v")
+      .sort("field -index")
+      .limit(1);
+    res.json(latestBlock);
+  });
+
   app.listen(3000, () => console.log("Listening http on port 3000"));
 };
