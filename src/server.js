@@ -1,7 +1,7 @@
 const bodyParser = require("body-parser");
 const app = require("express")();
 
-const features = require("./features");
+const features = new require("./features")();
 const BlockModel = require("./mongodb/block");
 
 module.exports = () => {

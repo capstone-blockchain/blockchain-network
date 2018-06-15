@@ -1,4 +1,4 @@
-const features = require("./src/features");
+const features = new require("./src/features")();
 const server = require("./src/server");
 const WebSocket = require("ws");
 require("./src/mongodb/connection");
@@ -17,7 +17,7 @@ wss.on("connection", ws => {
     const value = JSON.parse(data);
     if (
       value.type === features.MESSAGE_TYPE.blockchain &&
-      features.isValidChain(value.msg)
+      features.replaceBlockChain(value.msg)
     ) {
       BlockModel.deleteMany({}).then(() => {
         BlockModel.create(value.msg);
