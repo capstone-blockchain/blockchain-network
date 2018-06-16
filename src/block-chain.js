@@ -1,14 +1,17 @@
 const CryptoJS = require("crypto-js");
+
 const Block = require("./block");
 const WebSocket = require("ws");
 const BlockModel = require("./mongodb/block");
 
-const MESSAGE_TYPE = {
-  blockchain: "blockchain",
-  block: "block"
-};
-
 class BlockChain {
+  constructor() {
+    this.MESSAGE_TYPE = {
+      blockchain: "blockchain",
+      block: "block"
+    };
+  }
+
   getGenesisBlock() {
     return new Block(
       0,
@@ -134,13 +137,13 @@ class BlockChain {
       .select("-_id -__v")
       .exec();
     for (const node of nodes) {
-      node.send(this.message(MESSAGE_TYPE.blockchain, blockchain));
+      node.send(this.message(this.MESSAGE_TYPE.blockchain, blockchain));
     }
   }
 
   broadcastBlock(block) {
     for (const node of global.nodes) {
-      node.send(this.message(MESSAGE_TYPE.block, block));
+      node.send(this.message(this.MESSAGE_TYPE.block, block));
     }
   }
 

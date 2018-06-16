@@ -1,8 +1,9 @@
 const bodyParser = require("body-parser");
 const app = require("express")();
-
-const features = new require("./features")();
+const BlockChain = require("./block-chain");
 const BlockModel = require("./mongodb/block");
+
+const features = new BlockChain();
 
 module.exports = () => {
   app.use(bodyParser.json());
