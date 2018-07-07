@@ -1,5 +1,5 @@
 const mqtt = require("mqtt")
-const WebSocket = require("ws")
+// const WebSocket = require("ws")
 
 const BlockChain = require("./src/block-chain")
 const server = require("./src/server")
@@ -18,31 +18,32 @@ BlockModel.deleteMany({}).then(() => {
   BlockModel.create(features.getGenesisBlock())
 })
 
-const wss = new WebSocket.Server({ port: process.env.NODE_PORT })
-wss.on("connection", ws => {
-  ws.on("message", data => {
-    const value = JSON.parse(data)
-    if (value.type === features.MESSAGE_TYPE.blockchain) {
-      const blockchain = features.replaceBlockChain(value.msg)
-      // Receive blockchain
-      if (blockchain) {
-        BlockModel.deleteMany({}).then(() => {
-          BlockModel.create(blockchain)
-        })
-      }
-    } else if (
-      value.type === features.MESSAGE_TYPE.block &&
-      features.isValidBlock(value.msg)
-    ) {
-      // Receive block
-      BlockModel.create(value.msg)
-    }
-  })
-})
+// const wss = new WebSocket.Server({ port: process.env.NODE_PORT })
+// wss.on("connection", ws => {
+//   ws.on("message", data => {
+//     const value = JSON.parse(data)
+//     if (value.type === features.MESSAGE_TYPE.blockchain) {
+//       const blockchain = features.replaceBlockChain(value.msg)
+//       // Receive blockchain
+//       if (blockchain) {
+//         BlockModel.deleteMany({}).then(() => {
+//           BlockModel.create(blockchain)
+//         })
+//       }
+//     } else if (
+//       value.type === features.MESSAGE_TYPE.block &&
+//       features.isValidBlock(value.msg)
+//     ) {
+//       // Receive block
+//       BlockModel.create(value.msg)
+//     }
+//   })
+// })
 
 mqttClient.on("connect", () => {
   mqttClient.subscribe(topics.REQUEST_BLOCKCHAIN)
   mqttClient.subscribe(topics.BROADCAST_BLOCKCHAIN)
+  mqttClient.subscribe(topics.REQUEST_LATEST_BLOCK)
   mqttClient.publish(topics.REQUEST_BLOCKCHAIN, process.env.NODE_IP)
 })
 
@@ -60,14 +61,27 @@ mqttClient.on("message", async (topic, message) => {
       )
       break
     case topics.BROADCAST_BLOCKCHAIN:
-      blockchain = message.toString()
-      blockchain = await features.replaceBlockChain(blockchain)
+      blockchain = JSON.parse(message.toString())
       require("debug")("BROADCAST_BLOCKCHAIN")(blockchain)
+      blockchain = await features.replaceBlockChain(blockchain)
       // Receive blockchain
       if (blockchain) {
         BlockModel.deleteMany({}).then(() => {
           BlockModel.create(blockchain)
         })
+      }
+      break
+    case topics.REQUEST_LATEST_BLOCK:
+      const block = await features.getLatestBlock()
+      require("debug")("REQUEST_LATEST_BLOCK")(block)
+      mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, JSON.stringify(block))
+      break
+    case topics.RESPONSE_NEW_BLOCK:
+      const latestBlock = await features.getLatestBlock()
+      const newBlock = JSON.parse(message.toString())
+      if (features.isValidNewBlock(newBlock, latestBlock)) {
+        require("debug")("RESPONSE_NEW_BLOCK")(block)
+        BlockModel.create(newBlock)
       }
       break
     default:
