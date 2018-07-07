@@ -23,6 +23,12 @@ class BlockChain {
     );
   }
 
+  async getBlockchain() {
+    return await BlockModel.find({})
+      .select("-_id -__v")
+      .exec();
+  }
+
   isValidHashDifficulty(hash = "", difficulty) {
     let i;
     for (i = 0; i < hash.length; i++) {
@@ -106,14 +112,18 @@ class BlockChain {
       .select("-_id -__v")
       .sort("field index")
       .exec();
-    if (
-      this.isValidChain(newBlockChain) &&
-      newBlockChain.length > currentBlockChain.length
-    ) {
-      console.log(
-        "Received blockchain is valid. Replacing current blockchain with received blockchain"
-      );
-      return newBlockChain;
+    if (this.isValidChain(newBlockChain)) {
+      if (newBlockChain.length > currentBlockChain.length) {
+        console.log(
+          "Received blockchain is valid and longer than current one. Replacing current blockchain with received blockchain"
+        );
+        return newBlockChain;
+      } else {
+        console.log(
+          "Received blockchain is valid and shorter than current one. Keeping current blockchain"
+        );
+        return currentBlockChain;
+      }
     } else {
       console.log("Received blockchain invalid. No replacement is made");
       return null;

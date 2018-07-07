@@ -3,17 +3,20 @@ services:
   # Node 1
   node1:
     image: blockchain
-    command: sh -c "yarn; nodemon index.js"
+    command: sh -c "yarn; nodemon --inspect=0.0.0.0:9229 index.js"
     volumes:
       - ".:/var/app"
     ports:
       - 3000:3000
-      - 8080:8080
+      - 9229:9229
     environment:
       DEBUG: "*"
       TERM: xterm-256color
+      NODE_IP: node1
       NODE_PORT: 8080
       MONGO_URL: mongodb://node1_db:27017/blockchain
+      MQTT_BROKER_IP: broker
+      MQTT_BROKER_PORT: 1883
     stdin_open: true
     tty: true
     container_name: "node1"
@@ -31,12 +34,14 @@ services:
       - ".:/var/app"
     ports:
       - 3001:3000
-      - 8081:8080
     environment:
       DEBUG: "*"
       TERM: xterm-256color
+      NODE_IP: node2
       NODE_PORT: 8081
       MONGO_URL: mongodb://node2_db:27017/blockchain
+      MQTT_BROKER_IP: broker
+      MQTT_BROKER_PORT: 1883
     stdin_open: true
     tty: true
     container_name: "node2"
@@ -54,12 +59,14 @@ services:
       - ".:/var/app"
     ports:
       - 3002:3000
-      - 8082:8080
     environment:
       DEBUG: "*"
       TERM: xterm-256color
+      NODE_IP: node3
       NODE_PORT: 8082
       MONGO_URL: mongodb://node3_db:27017/blockchain
+      MQTT_BROKER_IP: broker
+      MQTT_BROKER_PORT: 1883
     stdin_open: true
     tty: true
     container_name: "node3"
@@ -68,3 +75,11 @@ services:
   node3_db:
     image: mongo:3.0.15
     container_name: "node3_db"
+
+  broker:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    stdin_open: true
+    tty: true
+    container_name: "broker"
