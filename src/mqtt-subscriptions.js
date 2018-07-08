@@ -46,9 +46,8 @@ module.exports = () => {
         break
 
       case topics.RESPONSE_NEW_BLOCK:
-        const latestBlock = await features.getLatestBlock()
         const newBlock = JSON.parse(message.toString())
-        if (features.isValidNewBlock(newBlock, latestBlock)) {
+        if (features.isValidBlock(newBlock)) {
           require("debug")("RESPONSE_NEW_BLOCK")(block)
           BlockModel.create(newBlock)
         }
