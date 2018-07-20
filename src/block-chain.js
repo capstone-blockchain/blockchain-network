@@ -112,8 +112,8 @@ class BlockChain {
       .select("-_id -__v")
       .sort("field index")
       .exec()
-    if (this.isValidChain(newBlockChain)) {
-      if (newBlockChain.length > currentBlockChain.length) {
+    if (this.isValidChain(newBlockChain) && newBlockChain.length > 1) {
+      if (newBlockChain.length >= currentBlockChain.length) {
         console.log(
           "Received blockchain is valid and longer than current one. Replacing current blockchain with received blockchain"
         )

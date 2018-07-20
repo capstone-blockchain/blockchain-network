@@ -29,7 +29,7 @@ module.exports = () => {
 
       case topics.BROADCAST_BLOCKCHAIN:
         blockchain = JSON.parse(message.toString())
-        require("debug")("BROADCAST_BLOCKCHAIN")(blockchain)
+        require("debug")("BROADCAST_BLOCKCHAIN")(JSON.stringify(blockchain))
         blockchain = await features.replaceBlockChain(blockchain)
         // Receive blockchain
         if (blockchain) {
@@ -41,7 +41,7 @@ module.exports = () => {
 
       case topics.REQUEST_LATEST_BLOCK:
         const block = await features.getLatestBlock()
-        require("debug")("REQUEST_LATEST_BLOCK")(block)
+        require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
         mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, JSON.stringify(block))
         break
 
