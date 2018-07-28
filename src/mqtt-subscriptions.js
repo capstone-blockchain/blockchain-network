@@ -10,6 +10,7 @@ module.exports = () => {
     mqttClient.subscribe(topics.REQUEST_BLOCKCHAIN)
     mqttClient.subscribe(topics.BROADCAST_BLOCKCHAIN)
     mqttClient.subscribe(topics.REQUEST_LATEST_BLOCK)
+    mqttClient.subscribe(topics.RESPONSE_NEW_BLOCK)
     mqttClient.publish(topics.REQUEST_BLOCKCHAIN, process.env.NODE_IP)
   })
 
