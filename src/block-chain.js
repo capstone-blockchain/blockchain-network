@@ -82,17 +82,6 @@ class BlockChain {
     )
   }
 
-  isValidNewBlock(newBlock, previousBlock) {
-    if (previousBlock.index + 1 !== newBlock.index) {
-      console.log("invalid index")
-      return false
-    } else if (previousBlock.hash !== newBlock.previousHash) {
-      console.log("invalid previoushash")
-      return false
-    }
-    return true
-  }
-
   isValidChain(blockchain) {
     if (blockchain.length < 2) return true
     for (let index = 1; index < blockchain.length; index++) {
@@ -158,18 +147,24 @@ class BlockChain {
   }
 
   async isValidBlock(newBlock) {
-    const previousBlock = await BlockModel.find({})
+    let previousBlock = await BlockModel.find({})
       .select("-_id -__v")
       .sort("field -_id")
       .limit(1)
       .exec()
+    previousBlock = previousBlock[0]
+
     if (previousBlock.index + 1 !== newBlock.index) {
       console.log("invalid index")
       return false
-    } else if (previousBlock.hash !== newBlock.previousHash) {
+    }
+
+    if (previousBlock.hash !== newBlock.previousHash) {
       console.log("invalid previoushash")
       return false
-    } else if (this.getHashingString(newBlock) !== newBlock.hash) {
+    }
+
+    if (this.getHashingString(newBlock) !== newBlock.hash) {
       console.log("invalid hash")
       return false
     }

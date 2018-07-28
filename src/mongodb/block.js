@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const schema = new mongoose.Schema({
   index: "number",
   previousHash: "string",
-  timestamp: "string",
+  timestamp: "number",
   data: "string",
   hash: "string",
-  nonce: "string"
+  nonce: "number"
 });
 module.exports = mongoose.model("Block", schema);

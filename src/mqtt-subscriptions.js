@@ -41,15 +41,24 @@ module.exports = () => {
         break
 
       case topics.REQUEST_LATEST_BLOCK:
-        const block = await features.getLatestBlock()
+        let block = await features.getLatestBlock()
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
+        block = {
+          index: block.index,
+          previousHash: block.previousHash,
+          timestamp: block.timestamp,
+          data: block.data,
+          hash: block.hash,
+          nonce: block.nonce
+        }
         mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, JSON.stringify(block))
         break
 
       case topics.RESPONSE_NEW_BLOCK:
         const newBlock = JSON.parse(message.toString())
-        if (features.isValidBlock(newBlock)) {
-          require("debug")("RESPONSE_NEW_BLOCK")(block)
+        const isBlockValid = await features.isValidBlock(newBlock)
+        if (isBlockValid) {
+          require("debug")("RESPONSE_NEW_BLOCK")(newBlock)
           BlockModel.create(newBlock)
         }
         break
