@@ -27,54 +27,54 @@ services:
     container_name: "node1_db"
 
   # Node 2
-  node2:
-    image: blockchain
-    command: sh -c "yarn; nodemon index.js"
-    volumes:
-      - ".:/var/app"
-    ports:
-      - 3001:3000
-    environment:
-      DEBUG: "*"
-      TERM: xterm-256color
-      NODE_IP: node2
-      NODE_PORT: 8081
-      MONGO_URL: mongodb://node2_db:27017/blockchain
-      MQTT_BROKER_IP: broker
-      MQTT_BROKER_PORT: 1883
-    stdin_open: true
-    tty: true
-    container_name: "node2"
-    links:
-      - node2_db
-  node2_db:
-    image: mongo:3.0.15
-    container_name: "node2_db"
+  # node2:
+  #   image: blockchain
+  #   command: sh -c "yarn; nodemon index.js"
+  #   volumes:
+  #     - ".:/var/app"
+  #   ports:
+  #     - 3001:3000
+  #   environment:
+  #     DEBUG: "*"
+  #     TERM: xterm-256color
+  #     NODE_IP: node2
+  #     NODE_PORT: 8081
+  #     MONGO_URL: mongodb://node2_db:27017/blockchain
+  #     MQTT_BROKER_IP: broker
+  #     MQTT_BROKER_PORT: 1883
+  #   stdin_open: true
+  #   tty: true
+  #   container_name: "node2"
+  #   links:
+  #     - node2_db
+  # node2_db:
+  #   image: mongo:3.0.15
+  #   container_name: "node2_db"
 
   # Node 3
-  node3:
-    image: blockchain
-    command: sh -c "yarn; nodemon index.js"
-    volumes:
-      - ".:/var/app"
-    ports:
-      - 3002:3000
-    environment:
-      DEBUG: "*"
-      TERM: xterm-256color
-      NODE_IP: node3
-      NODE_PORT: 8082
-      MONGO_URL: mongodb://node3_db:27017/blockchain
-      MQTT_BROKER_IP: broker
-      MQTT_BROKER_PORT: 1883
-    stdin_open: true
-    tty: true
-    container_name: "node3"
-    links:
-      - node3_db
-  node3_db:
-    image: mongo:3.0.15
-    container_name: "node3_db"
+  # node3:
+  #   image: blockchain
+  #   command: sh -c "yarn; nodemon index.js"
+  #   volumes:
+  #     - ".:/var/app"
+  #   ports:
+  #     - 3002:3000
+  #   environment:
+  #     DEBUG: "*"
+  #     TERM: xterm-256color
+  #     NODE_IP: node3
+  #     NODE_PORT: 8082
+  #     MONGO_URL: mongodb://node3_db:27017/blockchain
+  #     MQTT_BROKER_IP: broker
+  #     MQTT_BROKER_PORT: 1883
+  #   stdin_open: true
+  #   tty: true
+  #   container_name: "node3"
+  #   links:
+  #     - node3_db
+  # node3_db:
+  #   image: mongo:3.0.15
+  #   container_name: "node3_db"
 
   broker:
     image: eclipse-mosquitto

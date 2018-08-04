@@ -1,10 +1,12 @@
 const mqtt = require("mqtt")
 global.mqttClient = mqtt.connect(`mqtt://${process.env.MQTT_BROKER_IP}`)
+
 // const WebSocket = require("ws")
 const BlockChain = require("./src/block-chain")
 const features = new BlockChain()
 const server = require("./src/server")
 require("./src/mongodb/connection")
+require("./src/sequelize/connection")
 const BlockModel = require("./src/mongodb/block")
 const mqttSubcription = require("./src/mqtt-subscriptions")
 
