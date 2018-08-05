@@ -2,7 +2,7 @@ const CryptoJS = require("crypto-js")
 
 const Block = require("./block")
 const WebSocket = require("ws")
-const BlockModel = require("./mongodb/block")
+const BlockModel = require("./sequelize/block")
 
 class BlockChain {
   constructor() {
@@ -24,9 +24,9 @@ class BlockChain {
   }
 
   async getBlockchain() {
-    return await BlockModel.find({})
-      .select("-_id -__v")
-      .exec()
+    return await BlockModel.findAll({
+      order: [["index", "ASC"]]
+    })
   }
 
   isValidHashDifficulty(hash = "", difficulty) {
@@ -97,10 +97,7 @@ class BlockChain {
   }
 
   async replaceBlockChain(newBlockChain) {
-    const currentBlockChain = await BlockModel.find({})
-      .select("-_id -__v")
-      .sort("field index")
-      .exec()
+    const currentBlockChain = await this.getBlockchain()
     if (this.isValidChain(newBlockChain) && newBlockChain.length > 1) {
       if (newBlockChain.length >= currentBlockChain.length) {
         console.log(
@@ -132,9 +129,7 @@ class BlockChain {
   }
 
   async broadcastChain(nodes) {
-    const blockchain = await BlockModel.find({})
-      .select("-_id -__v")
-      .exec()
+    const blockchain = await this.getBlockchain()
     for (const node of nodes) {
       node.send(this.message(this.MESSAGE_TYPE.blockchain, blockchain))
     }
@@ -147,11 +142,7 @@ class BlockChain {
   }
 
   async isValidBlock(newBlock) {
-    let previousBlock = await BlockModel.find({})
-      .select("-_id -__v")
-      .sort("field -_id")
-      .limit(1)
-      .exec()
+    let previousBlock = await this.getLatestBlock()
     previousBlock = previousBlock[0]
 
     if (previousBlock.index + 1 !== newBlock.index) {
@@ -173,9 +164,11 @@ class BlockChain {
   }
 
   async getLatestBlock() {
-    return await BlockModel.findOne()
-      .sort("field -index")
-      .limit(1)
+    const block = await BlockModel.findAll({
+      limit: 1,
+      order: [["index", "DESC"]]
+    })
+    return block[0]
   }
 
   message(type, msg) {

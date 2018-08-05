@@ -1,6 +1,6 @@
 const BlockChain = require("./block-chain")
 const topics = require("./mqtt-topics")
-const BlockModel = require("./mongodb/block")
+const BlockModel = require("./sequelize/block")
 
 const features = new BlockChain()
 const mqttClient = global.mqttClient
@@ -34,7 +34,10 @@ module.exports = () => {
         blockchain = await features.replaceBlockChain(blockchain)
         // Receive blockchain
         if (blockchain) {
-          BlockModel.deleteMany({}).then(() => {
+          BlockModel.destroy({
+            where: {},
+            truncate: true
+          }).then(() => {
             BlockModel.create(blockchain)
           })
         }
