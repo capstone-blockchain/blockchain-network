@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize")
 const sequelize = global.sequelize
 
-const Block = sequelize.define("block", {
+const Block = sequelize.define("blockchain", {
   index: Sequelize.INTEGER,
   previousHash: Sequelize.STRING,
   timestamp: Sequelize.INTEGER,

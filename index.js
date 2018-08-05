@@ -7,13 +7,16 @@ const features = new BlockChain()
 const server = require("./src/server")
 require("./src/mongodb/connection")
 require("./src/sequelize/connection")
-const BlockModel = require("./src/mongodb/block")
+const BlockModel = require("./src/sequelize/block")
 const mqttSubcription = require("./src/mqtt-subscriptions")
 
 // Node list
 global.nodes = []
 // Blockchain with genesis block
-BlockModel.deleteMany({}).then(() => {
+BlockModel.destroy({
+  where: {},
+  truncate: true
+}).then(() => {
   BlockModel.create(features.getGenesisBlock())
 })
 
