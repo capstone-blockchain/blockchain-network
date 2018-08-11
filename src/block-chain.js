@@ -143,7 +143,6 @@ class BlockChain {
 
   async isValidBlock(newBlock) {
     let previousBlock = await this.getLatestBlock()
-    previousBlock = previousBlock[0]
 
     if (previousBlock.index + 1 !== newBlock.index) {
       console.log("invalid index")
