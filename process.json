@@ -1,0 +1,19 @@
+{
+  "apps": [
+  	{
+      "name": "blockchain",
+      "script": "index.js",
+      "instances": "max",
+      "exec_mode": "cluster",
+      "watch": true,
+      "env": {
+        "NODE_IP": "fill",
+        "MQTT_BROKER_IP": "10.247.193.245",
+        "MQTT_BROKER_PORT": 1883
+      },
+      "error_file": "logs/err.log",
+      "out_file": "logs/out.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss"
+    }
+  ]
+}
