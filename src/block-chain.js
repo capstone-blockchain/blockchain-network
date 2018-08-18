@@ -41,7 +41,7 @@ class BlockChain {
   calculateHash(index, previousHash, timestamp, data) {
     let nonce = 0
     let hash
-    while (!this.isValidHashDifficulty(hash, 1)) {
+    while (!this.isValidHashDifficulty(hash, process.env.DIFFICULTY)) {
       nonce = nonce + 1
       hash = this.getHashingString({
         index,
@@ -58,9 +58,9 @@ class BlockChain {
   }
 
   getHashingString({ index, previousHash, timestamp, data, nonce }) {
-    return CryptoJS.SHA256(
-      index + previousHash + timestamp + data + nonce
-    ).toString()
+    const dataString =
+      index + previousHash + timestamp + process.env.DIFFICULTY + data + nonce
+    return CryptoJS.SHA256(dataString).toString()
   }
 
   generateNextBlock(blockData, latestBlock) {
