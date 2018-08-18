@@ -30,11 +30,12 @@ class BlockChain {
   }
 
   isValidHashDifficulty(hash = "", difficulty) {
-    let i
-    for (i = 0; i < hash.length; i++) {
-      if (hash[i] !== "0") break
+    const zeros = hash.substring(0, difficulty)
+    let counter = 0
+    for (let i = 0; i < zeros.length; i++) {
+      if (zeros[i] === "0") counter++
     }
-    return i >= difficulty
+    return counter === difficulty
   }
 
   calculateHash(index, previousHash, timestamp, data) {
@@ -156,6 +157,11 @@ class BlockChain {
 
     if (this.getHashingString(newBlock) !== newBlock.hash) {
       console.log("invalid hash")
+      return false
+    }
+
+    if (!this.isValidHashDifficulty(newBlock.hash, process.env.DIFFICULTY)) {
+      console.log("invalid difficulty")
       return false
     }
 

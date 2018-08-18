@@ -47,9 +47,10 @@ module.exports = () => {
         let block = await features.getLatestBlock()
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
         block = {
-          index: block.index,
-          timestamp: new Date(block.timestamp).getTime(),
-          hash: block.hash
+          i: block.index,
+          t: new Date(block.timestamp).getTime(),
+          ph: block.hash,
+          d: process.env.DIFFICULTY
         }
         mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, JSON.stringify(block))
         break
