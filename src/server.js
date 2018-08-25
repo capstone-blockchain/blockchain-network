@@ -1,8 +1,7 @@
 const bodyParser = require("body-parser")
 const app = require("express")()
 const BlockModel = require("./sequelize/block")
-let features = require("./block-chain")
-features = new features()
+let features = new (require("./block-chain"))()
 
 module.exports = () => {
   app.use(bodyParser.json())
@@ -28,8 +27,9 @@ module.exports = () => {
       order: [["index", "DESC"]]
     })
     const newBlock = features.generateNextBlock(req.body.data, latestBlock[0])
+    BlockModel.create(newBlock)
     res.json(newBlock)
   })
 
-  app.listen(3000, () => console.log("Listening http on port 3000"))
+  app.listen(3000, "0.0.0.0", () => console.log("Listening http on port 3000"))
 }

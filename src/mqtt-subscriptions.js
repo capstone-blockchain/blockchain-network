@@ -9,6 +9,7 @@ module.exports = () => {
   mqttClient.on("connect", () => {
     mqttClient.subscribe(topics.REQUEST_BLOCKCHAIN)
     mqttClient.subscribe(topics.BROADCAST_BLOCKCHAIN)
+    mqttClient.subscribe(topics.REQUEST_BLOCKCHAIN_WEBAPP)
     mqttClient.subscribe(topics.REQUEST_LATEST_BLOCK)
     mqttClient.subscribe(topics.RESPONSE_NEW_BLOCK)
     mqttClient.publish(topics.REQUEST_BLOCKCHAIN, process.env.NODE_IP)
@@ -41,6 +42,15 @@ module.exports = () => {
             BlockModel.create(blockchain)
           })
         }
+        break
+
+      case topics.REQUEST_BLOCKCHAIN_WEBAPP:
+        require("debug")("REQUEST_BLOCKCHAIN_WEBAPP")(message.toString())
+        blockchain = await features.getBlockchain()
+        mqttClient.publish(
+          topics.BROADCAST_BLOCKCHAIN_WEBAPP,
+          JSON.stringify(blockchain)
+        )
         break
 
       case topics.REQUEST_LATEST_BLOCK:

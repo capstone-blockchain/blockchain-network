@@ -8,6 +8,7 @@ services:
       - ".:/var/app"
     ports:
       - 6000:3000
+      - 9229:9229
     environment:
       DEBUG: "*"
       TERM: xterm-256color
@@ -16,7 +17,7 @@ services:
       MONGO_URL: mongodb://node1_db:27017/blockchain
       MQTT_BROKER_IP: broker
       MQTT_BROKER_PORT: 1883
-      DIFFICULTY: 2
+      DIFFICULTY: 1
     stdin_open: true
     tty: true
     container_name: "node1"
