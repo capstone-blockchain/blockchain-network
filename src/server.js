@@ -1,7 +1,12 @@
+/////////// INLUDE LIB ///////////
 const bodyParser = require("body-parser")
 const app = require("express")()
+const Client = require("node-rest-client").Client
+/////////// INLUDE LIB ///////////
+
 const BlockModel = require("./sequelize/block")
 let features = new (require("./block-chain"))()
+const client = new Client()
 
 module.exports = () => {
   app.use(bodyParser.json())
@@ -28,7 +33,19 @@ module.exports = () => {
     })
     const newBlock = features.generateNextBlock(req.body.data, latestBlock[0])
     BlockModel.create(newBlock)
-    res.json(newBlock)
+
+    // Inform rest service of new block
+    const args = {
+      data: newBlock,
+      headers: { "Content-Type": "application/json" }
+    }
+    client.post(
+      `http://${process.env.REST_SERVICE_IP}:5000/block`,
+      args,
+      () => {
+        res.json(newBlock)
+      }
+    )
   })
 
   app.listen(3000, "0.0.0.0", () => console.log("Listening http on port 3000"))

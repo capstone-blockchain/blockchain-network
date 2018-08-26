@@ -1,8 +1,10 @@
 const BlockChain = require("./block-chain")
 const topics = require("./mqtt-topics")
 const BlockModel = require("./sequelize/block")
+const Client = require("node-rest-client").Client
 
 const features = new BlockChain()
+const client = new Client()
 const mqttClient = global.mqttClient
 
 module.exports = () => {
@@ -71,6 +73,12 @@ module.exports = () => {
         if (isBlockValid) {
           require("debug")("RESPONSE_NEW_BLOCK")(newBlock)
           BlockModel.create(newBlock)
+
+          const args = {
+            data: newBlock,
+            headers: { "Content-Type": "application/json" }
+          }
+          client.post(`http://${process.env.REST_SERVICE_IP}:5000/block`, args)
         }
         break
 
