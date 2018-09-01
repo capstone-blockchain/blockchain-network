@@ -59,7 +59,7 @@ class BlockChain {
 
   getHashingString({ index, previousHash, timestamp, data, nonce }) {
     const dataString =
-      index + previousHash + timestamp + process.env.DIFFICULTY + data + nonce
+      index + previousHash + timestamp + data + nonce
     return CryptoJS.SHA256(dataString).toString()
   }
 
