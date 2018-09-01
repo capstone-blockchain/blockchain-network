@@ -60,7 +60,7 @@ module.exports = () => {
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
         const newBlockData = block.index + block.hash + new Date().getTime()
         mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
-          qos: 2
+          qos: 1
         })
         break
 
