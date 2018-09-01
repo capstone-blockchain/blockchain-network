@@ -59,9 +59,11 @@ module.exports = () => {
         const block = await features.getLatestBlock()
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
         const newBlockData = block.index + block.hash + new Date().getTime()
-        mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
-          qos: 1
-        })
+        setTimeout(() => {
+          mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
+            qos: 1
+          })
+        }, 2000)
         break
 
       case topics.RESPONSE_NEW_BLOCK:
