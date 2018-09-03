@@ -58,8 +58,9 @@ module.exports = () => {
       case topics.REQUEST_LATEST_BLOCK:
         const block = await features.getLatestBlock()
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
+
         global.latestTimestamp = new Date().getTime()
-        const newBlockData = block.index + block.hash + global.latestTimestamp
+        const newBlockData = block.index.toString().padStart(2, 0) + block.hash + global.latestTimestamp
         setTimeout(() => {
           mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
             qos: 1

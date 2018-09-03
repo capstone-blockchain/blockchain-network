@@ -144,7 +144,9 @@ class BlockChain {
   async isValidBlock(newBlock) {
     let previousBlock = await this.getLatestBlock()
 
-    if (previousBlock.index + 1 !== newBlock.index) {
+    if (
+      (previousBlock.index + 1).toString().padStart(2, 0) !== newBlock.index
+    ) {
       console.log("invalid index")
       return false
     }
@@ -170,7 +172,7 @@ class BlockChain {
   async newBlock(dataHashNonce) {
     const latestBlock = await this.getLatestBlock()
     return new Block(
-      latestBlock.index + 1,
+      (latestBlock.index + 1).toString().padStart(2, 0),
       latestBlock.hash,
       global.latestTimestamp,
       dataHashNonce[0],
