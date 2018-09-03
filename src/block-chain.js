@@ -58,8 +58,7 @@ class BlockChain {
   }
 
   getHashingString({ index, previousHash, timestamp, data, nonce }) {
-    const dataString =
-      index + previousHash + timestamp + data + nonce
+    const dataString = index + previousHash + timestamp + data + nonce
     return CryptoJS.SHA256(dataString).toString()
   }
 
@@ -166,6 +165,18 @@ class BlockChain {
     }
 
     return true
+  }
+
+  async newBlock(dataHashNonce) {
+    const latestBlock = await this.getLatestBlock()
+    return new Block(
+      latestBlock.index + 1,
+      latestBlock.hash,
+      global.latestTimestamp,
+      dataHashNonce[0],
+      dataHashNonce[1],
+      dataHashNonce[2]
+    )
   }
 
   async getLatestBlock() {
