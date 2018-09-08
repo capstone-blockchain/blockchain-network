@@ -17,6 +17,7 @@ services:
       MQTT_BROKER_IP: broker
       DIFFICULTY: 2
       REST_SERVICE_IP: rest
+      ALLOW_BROADCAST_LATEST_BLOCK: true
     stdin_open: true
     tty: true
     container_name: "node1"

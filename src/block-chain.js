@@ -170,15 +170,15 @@ class BlockChain {
     return true
   }
 
-  async newBlock(nonceHashData) {
+  async newBlock(nonceHashDataTimestamp) {
     const latestBlock = await this.getLatestBlock()
     return new Block(
       (latestBlock.index + 1).toString().padStart(2, 0),
       latestBlock.hash,
-      global.latestTimestamp,
-      nonceHashData[2],
-      nonceHashData[1],
-      nonceHashData[0]
+      nonceHashDataTimestamp[3],
+      nonceHashDataTimestamp[2],
+      nonceHashDataTimestamp[1],
+      nonceHashDataTimestamp[0]
     )
   }
 

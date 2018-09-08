@@ -1,7 +1,6 @@
 const mqtt = require("mqtt")
 require("./src/sequelize/connection")
 global.mqttClient = mqtt.connect(`mqtt://${process.env.MQTT_BROKER_IP}`)
-global.latestTimestamp = null
 
 // const WebSocket = require("ws")
 const BlockChain = require("./src/block-chain")

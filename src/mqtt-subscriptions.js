@@ -57,25 +57,27 @@ module.exports = () => {
         break
 
       case topics.REQUEST_LATEST_BLOCK:
-        const block = await features.getLatestBlock()
-        require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
+        if (process.env.ALLOW_BROADCAST_LATEST_BLOCK) {
+          const block = await features.getLatestBlock()
+          require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
 
-        global.latestTimestamp = moment(new Date()).unix()
-        // Index for new block + previous block's hash + timestamp for new block
-        const newBlockData =
-          (block.index + 1).toString().padStart(2, 0) +
-          block.hash +
-          global.latestTimestamp
+          // Index for new block + previous block's hash + timestamp for new block
+          const newBlockData =
+            (block.index + 1).toString().padStart(2, 0) +
+            block.hash +
+            moment(new Date()).unix()
 
-        setTimeout(() => {
-          mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
-            qos: 1
-          })
-        }, 2000)
+          setTimeout(() => {
+            mqttClient.publish(topics.RESPONSE_LATEST_BLOCK, newBlockData, {
+              qos: 1
+            })
+          }, 2000)
+        }
         break
 
       case topics.RESPONSE_NEW_BLOCK:
         let newBlock = message.toString()
+        // nonce_hash_data_timestamp
         newBlock = newBlock.split("_")
         newBlock = await features.newBlock(newBlock)
         const isBlockValid = await features.isValidBlock(newBlock)
