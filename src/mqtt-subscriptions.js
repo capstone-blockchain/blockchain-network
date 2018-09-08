@@ -84,7 +84,7 @@ module.exports = () => {
 
         if (isBlockValid) {
           require("debug")("RESPONSE_NEW_BLOCK")(newBlock)
-          newBlock.timestamp = newBlock.timestamp * 1000
+          newBlock.timestamp = parseInt(newBlock.timestamp) * 1000
           BlockModel.create(newBlock)
 
           // Notify rest service of new block
