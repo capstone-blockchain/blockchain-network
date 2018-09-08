@@ -175,7 +175,7 @@ class BlockChain {
     return new Block(
       (latestBlock.index + 1).toString().padStart(2, 0),
       latestBlock.hash,
-      global.latestTimestamp * 1000,
+      global.latestTimestamp,
       nonceHashData[2],
       nonceHashData[1],
       nonceHashData[0]

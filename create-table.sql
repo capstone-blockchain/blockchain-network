@@ -1,3 +1,5 @@
+drop table blockchains;
+
 CREATE TABLE blockchains (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   'index' INTEGER NOT NULL,
