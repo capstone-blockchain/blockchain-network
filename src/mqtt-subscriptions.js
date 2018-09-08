@@ -57,7 +57,7 @@ module.exports = () => {
         break
 
       case topics.REQUEST_LATEST_BLOCK:
-        if (process.env.ALLOW_BROADCAST_LATEST_BLOCK == true) {
+        if (process.env.ALLOW_BROADCAST_LATEST_BLOCK == 1) {
           const block = await features.getLatestBlock()
           require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
 
