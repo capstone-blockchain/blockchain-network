@@ -2,6 +2,7 @@ const BlockChain = require("./block-chain")
 const topics = require("./mqtt-topics")
 const BlockModel = require("./sequelize/block")
 const Client = require("node-rest-client").Client
+const moment = require("moment")
 
 const features = new BlockChain()
 const client = new Client()
@@ -59,7 +60,7 @@ module.exports = () => {
         const block = await features.getLatestBlock()
         require("debug")("REQUEST_LATEST_BLOCK")(JSON.stringify(block))
 
-        global.latestTimestamp = new Date().getTime()
+        global.latestTimestamp = moment(new Date()).unix()
         // Index for new block + previous block's hash + timestamp for new block
         const newBlockData =
           (block.index + 1).toString().padStart(2, 0) +

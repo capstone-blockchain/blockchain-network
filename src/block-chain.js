@@ -1,4 +1,5 @@
 const CryptoJS = require("crypto-js")
+const moment = require("moment")
 
 const Block = require("./block")
 const WebSocket = require("ws")
@@ -16,7 +17,7 @@ class BlockChain {
     return new Block(
       0,
       "0",
-      new Date().getTime(),
+      moment(new Date()).unix(),
       "my genesis block!!",
       "816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7",
       0
@@ -65,7 +66,7 @@ class BlockChain {
   generateNextBlock(blockData, latestBlock) {
     const previousBlock = latestBlock
     const nextIndex = previousBlock.index + 1
-    const nextTimestamp = new Date().getTime()
+    const nextTimestamp = moment(new Date()).unix()
     const nextHash = this.calculateHash(
       nextIndex,
       previousBlock.hash,
