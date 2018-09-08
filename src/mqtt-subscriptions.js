@@ -75,19 +75,28 @@ module.exports = () => {
         break
 
       case topics.RESPONSE_NEW_BLOCK:
-        let newBlock = JSON.parse(message.toString())
-        newBlock = newBlockData.split("-")
+        let newBlock = message.toString()
+        newBlock = newBlock.split("_")
         newBlock = await features.newBlock(newBlock)
         const isBlockValid = await features.isValidBlock(newBlock)
+
         if (isBlockValid) {
           require("debug")("RESPONSE_NEW_BLOCK")(newBlock)
           BlockModel.create(newBlock)
 
+          // Notify rest service of new block
           const args = {
             data: newBlock,
             headers: { "Content-Type": "application/json" }
           }
-          client.post(`http://${process.env.REST_SERVICE_IP}:5000/block`, args)
+          client.post(
+            `http://${process.env.REST_SERVICE_IP}:5000/block`,
+            args,
+            (data, response) => {
+              require("debug")("send to rest service")(data)
+              require("debug")("send to rest service")(response)
+            }
+          )
         }
         break
 

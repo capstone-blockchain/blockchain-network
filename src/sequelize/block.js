@@ -7,7 +7,7 @@ const Block = sequelize.define("blockchain", {
   timestamp: Sequelize.DATE,
   data: Sequelize.STRING,
   hash: Sequelize.STRING,
-  nonce: Sequelize.INTEGER
+  nonce: Sequelize.STRING
 })
 
 module.exports = Block

@@ -17,10 +17,10 @@ class BlockChain {
     return new Block(
       0,
       "0",
-      moment(new Date()).unix(),
+      moment(new Date()).unix() * 1000,
       "my genesis block!!",
       "816534932c2b7154836da6afc367695e6337db8a921823784c14378abed4f7d7",
-      0
+      "0"
     )
   }
 
@@ -66,7 +66,7 @@ class BlockChain {
   generateNextBlock(blockData, latestBlock) {
     const previousBlock = latestBlock
     const nextIndex = previousBlock.index + 1
-    const nextTimestamp = moment(new Date()).unix()
+    const nextTimestamp = moment(new Date()).unix() * 1000
     const nextHash = this.calculateHash(
       nextIndex,
       previousBlock.hash,
@@ -170,15 +170,15 @@ class BlockChain {
     return true
   }
 
-  async newBlock(dataHashNonce) {
+  async newBlock(nonceHashData) {
     const latestBlock = await this.getLatestBlock()
     return new Block(
       (latestBlock.index + 1).toString().padStart(2, 0),
       latestBlock.hash,
-      global.latestTimestamp,
-      dataHashNonce[0],
-      dataHashNonce[1],
-      dataHashNonce[2]
+      global.latestTimestamp * 1000,
+      nonceHashData[2],
+      nonceHashData[1],
+      nonceHashData[0]
     )
   }
 
