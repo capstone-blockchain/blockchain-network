@@ -23,27 +23,33 @@ module.exports = () => {
 
     switch (topic) {
       case topics.REQUEST_BLOCKCHAIN:
-        if (process.env.NODE_IP === message.toString()) break
-        require("debug")("REQUEST_BLOCKCHAIN")(message.toString())
-        blockchain = await features.getBlockchain()
-        mqttClient.publish(
-          topics.BROADCAST_BLOCKCHAIN,
-          JSON.stringify(blockchain)
-        )
+        const nodeIP = message.toString()
+        if (process.env.NODE_IP !== nodeIP) {
+          require("debug")("REQUEST_BLOCKCHAIN")(nodeIP)
+          blockchain = await features.getBlockchain()
+
+          const value = {
+            nodeIP,
+            blockchain
+          }
+          mqttClient.publish(topics.BROADCAST_BLOCKCHAIN, JSON.stringify(value))
+        }
         break
 
       case topics.BROADCAST_BLOCKCHAIN:
-        blockchain = JSON.parse(message.toString())
-        require("debug")("BROADCAST_BLOCKCHAIN")(JSON.stringify(blockchain))
-        blockchain = await features.replaceBlockChain(blockchain)
-        // Receive blockchain
-        if (blockchain) {
-          BlockModel.destroy({
-            where: {},
-            truncate: true
-          }).then(() => {
-            BlockModel.create(blockchain)
-          })
+        const value = JSON.parse(message.toString())
+        if (process.env.NODE_IP === value.nodeIP) {
+          blockchain = await features.replaceBlockChain(value.blockchain)
+          require("debug")("BROADCAST_BLOCKCHAIN")(blockchain)
+          // Receive blockchain
+          if (blockchain) {
+            BlockModel.destroy({
+              where: {},
+              truncate: true
+            }).then(() => {
+              BlockModel.bulkCreate(blockchain)
+            })
+          }
         }
         break
 
